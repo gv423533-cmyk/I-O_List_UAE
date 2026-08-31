@@ -446,7 +446,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/fireba
 import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import {
   getFirestore, collection, doc, setDoc, updateDoc, deleteDoc, addDoc,
-  onSnapshot, writeBatch, query, orderBy, limit, getDocs
+  onSnapshot, writeBatch, query, orderBy, limit, getDocs, where
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 // Chaves públicas do Firebase — não são segredo (a segurança real fica nas
@@ -751,11 +751,12 @@ document.getElementById('importFileInput').addEventListener('change', async (e)=
   }
 
   _pendingImport = allRecords;
+  const fcsAfetadas = [...new Set(allRecords.map(r => r.fcs))];
   const body = document.getElementById('importConfirmBody');
   body.innerHTML = `
-    <div class="banner" style="margin-bottom:14px;border-color:var(--red-dim);">
-      <span>⚠</span>
-      <span>Isso vai <b style="color:var(--red)">apagar todos os dados atuais</b> (canais de teste, tags editadas e histórico de alterações) e substituir pelos ${allRecords.length} canais importados abaixo.</span>
+    <div class="banner" style="margin-bottom:14px;border-color:var(--amber-dim);">
+      <span>ℹ</span>
+      <span>Isso vai <b style="color:var(--amber)">substituir os canais das estações: ${fcsAfetadas.map(escapeHtml).join(', ')}</b> pelos ${allRecords.length} canais abaixo. As demais estações e todo o histórico de alterações <b>permanecem intactos</b>.</span>
     </div>
     ${fileSummaries.map(f => f.error
       ? `<div class="history-item"><div class="h-field" style="color:var(--red)">${escapeHtml(f.name)} — falha ao ler o arquivo</div></div>`
@@ -778,14 +779,14 @@ function closeImportConfirm(){
 document.getElementById('confirmImportBtn').addEventListener('click', async ()=>{
   if(!_pendingImport) return;
   const records = _pendingImport;
+  const fcsList = [...new Set(records.map(r => r.fcs))];
   closeImportConfirm();
-  toast(`Importando ${records.length} canais — isso pode levar alguns segundos...`);
+  toast(`Importando ${records.length} canais de ${fcsList.length} estação(ões) — isso pode levar alguns segundos...`);
 
   try{
-    await deleteAllDocsInCollection('channels');
-    await deleteAllDocsInCollection('history');
+    await deleteChannelsByFcs(fcsList);
     await importChannelsToFirestore(records);
-    toast(`${records.length} canais importados — dados de teste substituídos.`);
+    toast(`${records.length} canais importados (${fcsList.join(', ')}) — demais estações e histórico permanecem intactos.`);
   }catch(e){
     console.error('Erro ao importar para o Firestore', e);
     toast('⚠ Falha ao importar. Veja o console para detalhes e tente novamente.');
@@ -793,21 +794,32 @@ document.getElementById('confirmImportBtn').addEventListener('click', async ()=>
   }
 });
 
-// Apaga todos os documentos de uma coleção, em lotes de até 450 (limite do Firestore é 500 por batch)
-async function deleteAllDocsInCollection(name){
-  const snap = await getDocs(collection(db, name));
-  let batch = writeBatch(db);
-  let opCount = 0;
-  for(const d of snap.docs){
-    batch.delete(d.ref);
-    opCount++;
-    if(opCount === 450){
-      await batch.commit();
-      batch = writeBatch(db);
-      opCount = 0;
+// Apaga apenas os canais das estações (FCS) que estão sendo reimportadas — nunca
+// mexe nas demais estações nem no histórico, para permitir importar aos poucos
+// (ex: uma estação de cada vez) sem perder o que já foi carregado antes.
+async function deleteChannelsByFcs(fcsList){
+  if(!fcsList.length) return;
+  // Firestore permite até 30 valores por cláusula "in" — como temos só 9 FCS
+  // no total, isso nunca deve estourar, mas processamos em blocos por segurança.
+  const chunks = [];
+  for(let i=0; i<fcsList.length; i+=30) chunks.push(fcsList.slice(i, i+30));
+
+  for(const chunk of chunks){
+    const q = query(collection(db, 'channels'), where('fcs', 'in', chunk));
+    const snap = await getDocs(q);
+    let batch = writeBatch(db);
+    let opCount = 0;
+    for(const d of snap.docs){
+      batch.delete(d.ref);
+      opCount++;
+      if(opCount === 450){
+        await batch.commit();
+        batch = writeBatch(db);
+        opCount = 0;
+      }
     }
+    if(opCount > 0) await batch.commit();
   }
-  if(opCount > 0) await batch.commit();
 }
 
 // Grava os canais importados em lote. Documento id = fcs__terminalCode (único mesmo com múltiplas FCS)
