@@ -1,3 +1,23 @@
+
+/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Index · HTML
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -45,7 +65,7 @@
   ::-webkit-scrollbar{width:10px;height:10px;}
   ::-webkit-scrollbar-track{background:transparent;}
   ::-webkit-scrollbar-thumb{background:#2B333D;border-radius:6px;}
-
+ 
   /* ===== TOPBAR ===== */
   .topbar{
     display:flex;
@@ -104,7 +124,7 @@
   .btn.primary{background:var(--amber);color:#1A1204;border-color:var(--amber);font-weight:600;}
   .btn.primary:hover{background:#f0ac4a;}
   .btn.ghost{background:transparent;}
-
+ 
   /* ===== LAYOUT ===== */
   .layout{display:flex;min-height:calc(100vh - 63px);}
   .sidebar{
@@ -130,7 +150,7 @@
   .filter-chip .count{font-family:var(--mono); font-size:11px; color:var(--text-faint);}
   .filter-chip.active .count{color:var(--amber);}
   .type-dot{width:8px;height:8px;border-radius:2px;display:inline-block;margin-right:7px;}
-
+ 
   .main{flex:1; padding: 18px 22px; min-width:0;}
   .toolbar-row{display:flex; align-items:center; gap:10px; margin-bottom:14px;}
   .toolbar-row .path{
@@ -138,7 +158,7 @@
     padding:6px 10px; background:var(--panel); border-radius:5px; border:1px solid var(--border-soft);
   }
   .toolbar-row .spacer{flex:1;}
-
+ 
   /* ===== TABLE ===== */
   .table-wrap{border:1px solid var(--border); border-radius:8px; overflow:hidden; background:var(--panel);}
   table{width:100%; border-collapse:collapse; font-size:12.5px;}
@@ -170,7 +190,7 @@
   }
   .empty-state{padding:60px 20px; text-align:center; color:var(--text-faint);}
   .empty-state svg{opacity:0.3; margin-bottom:12px;}
-
+ 
   /* ===== MODAL / PANEL ===== */
   .overlay{
     position:fixed; inset:0; background:rgba(8,10,13,0.7);
@@ -225,7 +245,7 @@
   .meta-item .v{font-family:var(--mono); font-size:12.5px; margin-top:2px;}
   .drawer-footer{padding:14px 20px; border-top:1px solid var(--border); display:flex; gap:10px;}
   .drawer-footer .btn{flex:1; justify-content:center;}
-
+ 
   .history-item{
     padding:12px; border:1px solid var(--border-soft); border-radius:7px; margin-bottom:8px;
     background:#12161B;
@@ -238,7 +258,7 @@
   .history-item .h-new{color:var(--teal); font-family:var(--mono); font-weight:600;}
   .history-item .h-arrow{color:var(--text-faint);}
   .history-empty{text-align:center; padding:40px 10px; color:var(--text-faint); font-size:12.5px;}
-
+ 
   .toast{
     position:fixed; bottom:22px; left:50%; transform:translateX(-50%) translateY(20px);
     background:#1D242B; border:1px solid var(--teal); color:var(--text);
@@ -247,7 +267,7 @@
   }
   .toast.show{opacity:1; transform:translateX(-50%) translateY(0);}
   .toast .dot{width:7px;height:7px;border-radius:50%;background:var(--teal);}
-
+ 
   .global-history-panel{
     position:fixed; inset:0; background:rgba(8,10,13,0.7); display:none;
     align-items:center; justify-content:center; z-index:150; backdrop-filter: blur(2px);
@@ -260,7 +280,7 @@
   .ghp-head{padding:16px 20px; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center;}
   .ghp-head h3{margin:0; font-size:15px;}
   .ghp-body{padding:16px 20px; overflow-y:auto;}
-
+ 
   .banner{
     background: linear-gradient(90deg, rgba(232,163,61,0.1), transparent);
     border:1px solid var(--amber-dim); color: var(--text-dim);
@@ -268,7 +288,7 @@
     display:flex; align-items:center; gap:8px;
   }
   .banner b{color:var(--amber); font-weight:600;}
-
+ 
   /* ===== RESUMO POR ESTAÇÃO (FCS) ===== */
   .station-summary{display:flex; gap:12px; flex-wrap:wrap; margin-bottom:16px;}
   .station-card{
@@ -298,7 +318,7 @@
 </style>
 </head>
 <body>
-
+ 
 <div class="topbar">
   <div class="brand">
     <div class="brand-mark">
@@ -328,7 +348,7 @@
     Histórico geral
   </button>
 </div>
-
+ 
 <!-- Modal de confirmação de importação -->
 <div class="global-history-panel" id="importConfirmPanel">
   <div class="ghp-inner" style="width:560px;">
@@ -343,7 +363,7 @@
     </div>
   </div>
 </div>
-
+ 
 <div class="layout">
   <div class="sidebar">
     <div class="filter-group">
@@ -368,7 +388,7 @@
       </div>
     </div>
   </div>
-
+ 
   <div class="main">
     <div class="banner">
       <span>☁</span>
@@ -388,7 +408,7 @@
             <th>Canal</th>
             <th>Tag P&amp;ID</th>
             <th>Descrição</th>
-            <th>Faixa / Modo</th>
+            <th>Estação</th>
           </tr>
         </thead>
         <tbody id="tableBody"></tbody>
@@ -399,7 +419,7 @@
     </div>
   </div>
 </div>
-
+ 
 <!-- Drawer de edição -->
 <div class="overlay" id="drawerOverlay">
   <div class="drawer">
@@ -427,7 +447,7 @@
     </div>
   </div>
 </div>
-
+ 
 <!-- Painel de histórico geral -->
 <div class="global-history-panel" id="globalHistoryPanel">
   <div class="ghp-inner">
@@ -438,9 +458,9 @@
     <div class="ghp-body" id="globalHistoryBody"></div>
   </div>
 </div>
-
+ 
 <div class="toast" id="toast"><span class="dot"></span><span id="toastMsg"></span></div>
-
+ 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
@@ -448,7 +468,7 @@ import {
   getFirestore, collection, doc, setDoc, updateDoc, deleteDoc, addDoc,
   onSnapshot, writeBatch, query, orderBy, limit, getDocs, where
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
+ 
 // Chaves públicas do Firebase — não são segredo (a segurança real fica nas
 // regras do Firestore, que exigem autenticação para ler/escrever).
 const firebaseConfig = {
@@ -459,11 +479,11 @@ const firebaseConfig = {
   messagingSenderId: "30197153591",
   appId: "1:30197153591:web:744d10c37190a8797024b2",
 };
-
+ 
 const firebaseApp = initializeApp(firebaseConfig);
 const auth = getAuth(firebaseApp);
 const db = getFirestore(firebaseApp);
-
+ 
 function ensureAuth(){
   return new Promise((resolve, reject)=>{
     const unsub = onAuthStateChanged(auth, (user)=>{
@@ -472,7 +492,7 @@ function ensureAuth(){
     signInAnonymously(auth).catch(reject);
   });
 }
-
+ 
 /* ===================== NOTIFICAÇÃO VIA TELEGRAM ===================== */
 // ATENÇÃO: como este é um app estático (sem servidor por trás), o token do
 // bot fica visível para quem inspecionar o código-fonte da página. Mantenha
@@ -480,13 +500,13 @@ function ensureAuth(){
 // futuro, migre para uma Cloud Function que dispare o envio nos bastidores.
 const TELEGRAM_BOT_TOKEN = '8722681849:AAGQ8YI4D9bzvg3f2_DdnlYVMuNoi5pZLw8';
 const TELEGRAM_CHAT_ID = '-5011002600';
-
+ 
 function formatDateTelegram(ts){
   return new Date(ts).toLocaleString('pt-BR', {
     day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit'
   });
 }
-
+ 
 async function sendTelegramMessage(text){
   try{
     const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
@@ -504,7 +524,7 @@ async function sendTelegramMessage(text){
     console.warn('Falha ao enviar notificação Telegram', e);
   }
 }
-
+ 
 function notifyTelegramEdit(channel, changes, meta){
   const linhas = changes.map(ch =>
     `• <b>${escapeHtml(ch.field==='tag'?'Tag':FIELD_LABELS[ch.field]||ch.field)}:</b> ${escapeHtml(ch.old)||'<i>(vazio)</i>'} → ${escapeHtml(ch.new)||'<i>(vazio)</i>'}`
@@ -518,7 +538,7 @@ ${linhas}
 🕒 ${formatDateTelegram(meta.ts)}`;
   sendTelegramMessage(texto);
 }
-
+ 
 function notifyTelegramSwap(a, b, oldA, oldB, meta){
   const linhas = [];
   // Tag que estava no canal A e foi para o canal B
@@ -541,7 +561,7 @@ ${linhas.join('\n')}
 🕒 ${formatDateTelegram(meta.ts)}`;
   sendTelegramMessage(texto);
 }
-
+ 
 const TYPE_META = {
   AI: {label:'Entrada Analógica', color:'var(--ai)'},
   AO: {label:'Saída Analógica', color:'var(--ao)'},
@@ -549,7 +569,7 @@ const TYPE_META = {
   DO: {label:'Saída Digital', color:'var(--do)'},
   RTD: {label:'Entrada RTD (Temperatura)', color:'var(--rtd)'},
 };
-
+ 
 // Paleta de reserva para tipos de cartão ainda não previstos (ex: pulso, comunicação).
 // Assim, se aparecer um tipo novo na planilha, ele ganha uma cor própria automaticamente,
 // sem precisar editar o código.
@@ -562,9 +582,9 @@ function getTypeMeta(code, fallbackLabel){
   TYPE_META[code] = { label: fallbackLabel || code, color };
   return TYPE_META[code];
 }
-
+ 
 /* ===================== IMPORTAÇÃO DE PLANILHAS (CSV Yokogawa) ===================== */
-
+ 
 // Parser de CSV genérico, respeitando aspas (necessário pro cartão digital,
 // que tem campos com vírgula dentro de aspas, ex: "ON,,OFF,ON")
 function parseCSV(text){
@@ -592,19 +612,23 @@ function parseCSV(text){
   if(field.length || row.length){ row.push(field); rows.push(row); }
   return rows;
 }
-
+ 
 // Extrai FCS / Estação / Tipo de cartão a partir do nome do arquivo
 // Ex: "FCS0101_-_CALDEIRA_01_-_NODE_01_SLOT_02_-_ENTRADA_ANALÓGICA.csv"
 function parseFilenameMeta(name){
   let base = name.replace(/\.[Cc][Ss][Vv]$/, '');
   base = base.replace(/^\d+_/, ''); // remove prefixo numérico de timestamp, se houver
-  const parts = base.split('_-_').map(p => p.replace(/_/g,' ').trim());
+  base = base.replace(/_/g, ' ').trim(); // normaliza underscores em espaços
+  // Divide em qualquer hífen cercado (ou não) por espaços — cobre tanto
+  // "FCS0101_-_CALDEIRA_01_-_..." (vira "FCS0101 - CALDEIRA 01 - ...")
+  // quanto "FCS0101 - CALDEIRA 01 - ..." (formato já com espaços de origem)
+  const parts = base.split(/\s*-\s*/).map(p => p.trim()).filter(Boolean);
   const fcs = parts[0] || '';
   const estacao = parts[1] || '';
   const tipoRaw = parts[3] || parts[2] || '';
   return { fcs, estacao, tipoRaw };
 }
-
+ 
 function normTipo(tipoRaw){
   const t = (tipoRaw||'').toUpperCase();
   if(t.includes('ENTRADA') && t.includes('ANAL')) return {code:'AI', label:'Entrada Analógica'};
@@ -620,7 +644,7 @@ function normTipo(tipoRaw){
   const autoCode = (t.replace(/[^A-Z0-9]/g,'').slice(0,4)) || 'OUTRO';
   return { code: autoCode, label: tipoRaw ? tipoRaw.trim() : 'Tipo desconhecido' };
 }
-
+ 
 // Decodifica o código do terminal Yokogawa: Z + node(2) + slot(1) + protocolo(1) + canal(2)
 // Ex: Z012102 -> node 01, slot 2, protocolo 1 (Convencional), canal 02
 function decodeTerminal(code){
@@ -632,7 +656,7 @@ function decodeTerminal(code){
   const protocolo = protocoloCode === '2' ? 'HART' : 'Convencional';
   return { node, slot, protocoloCode, protocolo, canal };
 }
-
+ 
 function parseYokogawaCsv(text, meta, tipoInfo, ridStart){
   const rows = parseCSV(text);
   // Cartões digitais (DI/DO) têm layout de colunas próprio (Mode, Tag Name, Tag Comment...).
@@ -650,12 +674,12 @@ function parseYokogawaCsv(text, meta, tipoInfo, ridStart){
     const terminalCode = first.replace(/^%/, '');
     if(terminalCode.length < 6) continue; // linha fora do padrão esperado
     const { node, slot, protocoloCode, protocolo, canal } = decodeTerminal(terminalCode);
-
+ 
     let tag = '';
     for(const cell of row){
       if(cell && cell.startsWith('%%')){ tag = cell.replace(/^%+/, ''); break; }
     }
-
+ 
     const rec = {
       id: 'CH' + String(rid).padStart(4,'0'),
       fcs: meta.fcs,
@@ -667,7 +691,7 @@ function parseYokogawaCsv(text, meta, tipoInfo, ridStart){
       canal,
       tag,
     };
-
+ 
     if(isAnalog){
       rec.descricao = (row[3]||'').trim();
       rec.faixaBaixa = row[4] || '';
@@ -686,7 +710,7 @@ function parseYokogawaCsv(text, meta, tipoInfo, ridStart){
   }
   return { records, nextRid: rid };
 }
-
+ 
 function readFileAsLatin1(file){
   return new Promise((resolve, reject)=>{
     const reader = new FileReader();
@@ -700,18 +724,18 @@ function readFileAsLatin1(file){
     reader.readAsArrayBuffer(file);
   });
 }
-
+ 
 let _pendingImport = null;
-
+ 
 document.getElementById('importBtn').addEventListener('click', ()=>{
   document.getElementById('importFileInput').value = '';
   document.getElementById('importFileInput').click();
 });
-
+ 
 document.getElementById('importFileInput').addEventListener('change', async (e)=>{
   const rawFiles = Array.from(e.target.files || []);
   if(!rawFiles.length) return;
-
+ 
   // Evita processar o mesmo arquivo duas vezes se for selecionado por engano
   const seen = new Set();
   const files = rawFiles.filter(f=>{
@@ -723,12 +747,12 @@ document.getElementById('importFileInput').addEventListener('change', async (e)=
   if(files.length < rawFiles.length){
     toast(`${rawFiles.length - files.length} arquivo(s) duplicado(s) ignorado(s).`);
   }
-
+ 
   let rid = 1;
   let allRecords = [];
   const fileSummaries = [];
   let hadError = false;
-
+ 
   for(const file of files){
     try{
       const text = await readFileAsLatin1(file);
@@ -744,12 +768,12 @@ document.getElementById('importFileInput').addEventListener('change', async (e)=
       fileSummaries.push({ name: file.name, error: true });
     }
   }
-
+ 
   if(allRecords.length === 0){
     toast('Nenhum canal reconhecido nos arquivos selecionados.');
     return;
   }
-
+ 
   _pendingImport = allRecords;
   const fcsAfetadas = [...new Set(allRecords.map(r => r.fcs))];
   const body = document.getElementById('importConfirmBody');
@@ -768,21 +792,21 @@ document.getElementById('importFileInput').addEventListener('change', async (e)=
   `;
   document.getElementById('importConfirmPanel').classList.add('open');
 });
-
+ 
 document.getElementById('closeImportConfirmBtn').addEventListener('click', closeImportConfirm);
 document.getElementById('cancelImportBtn').addEventListener('click', closeImportConfirm);
 function closeImportConfirm(){
   document.getElementById('importConfirmPanel').classList.remove('open');
   _pendingImport = null;
 }
-
+ 
 document.getElementById('confirmImportBtn').addEventListener('click', async ()=>{
   if(!_pendingImport) return;
   const records = _pendingImport;
   const fcsList = [...new Set(records.map(r => r.fcs))];
   closeImportConfirm();
   toast(`Importando ${records.length} canais de ${fcsList.length} estação(ões) — isso pode levar alguns segundos...`);
-
+ 
   try{
     await deleteChannelsByFcs(fcsList);
     await importChannelsToFirestore(records);
@@ -793,7 +817,7 @@ document.getElementById('confirmImportBtn').addEventListener('click', async ()=>
     showRetryBanner();
   }
 });
-
+ 
 // Apaga apenas os canais das estações (FCS) que estão sendo reimportadas — nunca
 // mexe nas demais estações nem no histórico, para permitir importar aos poucos
 // (ex: uma estação de cada vez) sem perder o que já foi carregado antes.
@@ -803,7 +827,7 @@ async function deleteChannelsByFcs(fcsList){
   // no total, isso nunca deve estourar, mas processamos em blocos por segurança.
   const chunks = [];
   for(let i=0; i<fcsList.length; i+=30) chunks.push(fcsList.slice(i, i+30));
-
+ 
   for(const chunk of chunks){
     const q = query(collection(db, 'channels'), where('fcs', 'in', chunk));
     const snap = await getDocs(q);
@@ -821,7 +845,7 @@ async function deleteChannelsByFcs(fcsList){
     if(opCount > 0) await batch.commit();
   }
 }
-
+ 
 // Grava os canais importados em lote. Documento id = fcs__terminalCode (único mesmo com múltiplas FCS)
 async function importChannelsToFirestore(records){
   let batch = writeBatch(db);
@@ -839,7 +863,7 @@ async function importChannelsToFirestore(records){
   }
   if(opCount > 0) await batch.commit();
 }
-
+ 
 let channels = [];
 let history = [];
 let lastTecnico = '';
@@ -849,13 +873,13 @@ let activeSlotFilter = 'all';
 let activeStateFilter = 'all';
 let searchTerm = '';
 let currentChannelId = null;
-
+ 
 function nowLocalDatetime(){
   const d = new Date();
   d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
   return d.toISOString().slice(0,16);
 }
-
+ 
 function toast(msg){
   const t = document.getElementById('toast');
   document.getElementById('toastMsg').textContent = msg;
@@ -863,12 +887,12 @@ function toast(msg){
   clearTimeout(toast._tm);
   toast._tm = setTimeout(()=>t.classList.remove('show'), 2600);
 }
-
+ 
 async function init(){
   try{
     lastTecnico = localStorage.getItem('lastTecnico') || '';
   }catch(e){ lastTecnico = ''; }
-
+ 
   try{
     await ensureAuth();
   }catch(e){
@@ -877,7 +901,7 @@ async function init(){
     showRetryBanner();
     return;
   }
-
+ 
   // Escuta em tempo real a coleção de canais — qualquer alteração feita por
   // qualquer técnico (nesta ou em outra sessão) atualiza a tela automaticamente.
   onSnapshot(collection(db, 'channels'), (snap)=>{
@@ -888,7 +912,7 @@ async function init(){
     toast('⚠ Erro de sincronização com o banco de dados.');
     showRetryBanner();
   });
-
+ 
   // Escuta em tempo real o histórico (limitado às alterações mais recentes)
   const historyQuery = query(collection(db, 'history'), orderBy('ts', 'desc'), limit(1000));
   onSnapshot(historyQuery, (snap)=>{
@@ -897,14 +921,14 @@ async function init(){
   }, (err)=>{
     console.error('Erro ao sincronizar histórico', err);
   });
-
+ 
   render();
 }
-
+ 
 function getFcsScopedChannels(){
   return activeFcsFilter === 'all' ? channels : channels.filter(c => c.fcs === activeFcsFilter);
 }
-
+ 
 function renderFcsFilters(){
   const wrap = document.getElementById('fcsFilters');
   const fcsList = [...new Set(channels.map(c => c.fcs))].sort();
@@ -929,7 +953,7 @@ function renderFcsFilters(){
     });
   });
 }
-
+ 
 function buildTypeFilters(){
   const scoped = getFcsScopedChannels();
   const codes = [...new Set(scoped.map(c=>c.tipoCartaoCodigo))].sort();
@@ -952,7 +976,7 @@ function buildTypeFilters(){
     });
   });
 }
-
+ 
 function buildSlotFilters(){
   const scoped = getFcsScopedChannels();
   const wrap = document.getElementById('slotFilters');
@@ -975,7 +999,7 @@ function buildSlotFilters(){
     });
   });
 }
-
+ 
 function getFiltered(){
   let list = channels;
   if(activeFcsFilter !== 'all') list = list.filter(c=>c.fcs===activeFcsFilter);
@@ -996,7 +1020,7 @@ function getFiltered(){
   }
   return list;
 }
-
+ 
 // Dados de rede das estações (FCS) — Control Bus e Ethernet TCP/IP
 const STATION_NETWORK_INFO = {
   'FCS0101': { setor:'Caldeira 01',            stationType:'AFV10D', controlBusIp:'172.16.1.1', controlBusMask:'255.255.0.0', ethernetIp:'172.17.1.1', ethernetMask:'255.255.0.0' },
@@ -1009,7 +1033,7 @@ const STATION_NETWORK_INFO = {
   'FCS0108': { setor:'Difusor',                stationType:'AFV30D', controlBusIp:'172.16.1.8', controlBusMask:'255.255.0.0', ethernetIp:'172.17.1.8', ethernetMask:'255.255.0.0' },
   'FCS0109': { setor:'Captação',               stationType:'AFV10S', controlBusIp:'172.16.1.9', controlBusMask:'255.255.0.0', ethernetIp:'172.17.1.9', ethernetMask:'255.255.0.0' },
 };
-
+ 
 function renderStationSummary(){
   const byFcs = {};
   channels.forEach(c=>{
@@ -1024,19 +1048,19 @@ function renderStationSummary(){
       byFcs[key].reserva++;
     }
   });
-
+ 
   const rows = Object.values(byFcs).sort((a,b)=> a.fcs.localeCompare(b.fcs));
   const wrap = document.getElementById('stationSummary');
-
+ 
   const subtitleEl = document.getElementById('brandSubtitle');
   if(subtitleEl){
     subtitleEl.textContent = rows.length
       ? `${rows.length} ${rows.length>1?'estações':'estação'} · ${channels.length} canais`
       : 'Nenhum dado carregado';
   }
-
+ 
   if(!wrap) return;
-
+ 
   wrap.innerHTML = rows.map(r=>{
     const pctUso = r.total ? Math.round((r.emUso / r.total) * 100) : 0;
     const net = STATION_NETWORK_INFO[r.fcs];
@@ -1063,7 +1087,7 @@ function renderStationSummary(){
     </div>`;
   }).join('');
 }
-
+ 
 function render(){
   renderStationSummary();
   renderFcsFilters();
@@ -1073,27 +1097,23 @@ function render(){
   const tbody = document.getElementById('tableBody');
   document.getElementById('resultCount').textContent = `${list.length} de ${channels.length} canais`;
   document.getElementById('emptyState').style.display = list.length ? 'none' : 'block';
-
+ 
   tbody.innerHTML = list.map(c=>{
-    const meta = TYPE_META[c.tipoCartaoCodigo];
-    const isAnalog = c.tipoCartaoCodigo==='AI' || c.tipoCartaoCodigo==='AO';
-    const rangeOrMode = isAnalog
-      ? (c.faixaBaixa || c.faixaAlta ? `${c.faixaBaixa||'—'}–${c.faixaAlta||'—'} ${c.unidade||''}` : '—')
-      : (c.modo || '—');
+    const meta = getTypeMeta(c.tipoCartaoCodigo, c.tipoCartao);
     return `<tr data-id="${c.id}" class="${c._edited?'edited':''}">
-      <td class="mono">${c.terminalCode}</td>
-      <td><span class="type-pill" style="background:${hexAlpha(meta.color)};color:${meta.color}">${c.tipoCartaoCodigo}</span></td>
+      <td class="mono">%${c.terminalCode}</td>
+      <td><span class="type-pill" style="background:${hexAlpha(meta.color)};color:${meta.color};font-family:var(--sans);white-space:nowrap;"><span class="type-dot" style="background:${meta.color}"></span>${escapeHtml(meta.label)}</span></td>
       <td class="mono">${c.canal||'—'}</td>
       <td class="tag-cell ${c.tag?'':'empty'}">${c.tag || 'reserva'}${c._edited?'<span class="edited-flag" title="Editado"></span>':''}</td>
       <td class="desc-cell">${escapeHtml(c.descricao)||'—'}</td>
-      <td class="mono" style="color:var(--text-dim);font-size:11.5px;">${rangeOrMode}</td>
+      <td class="mono" style="color:var(--text-dim);font-size:11.5px;">${escapeHtml(c.fcs)||'—'}</td>
     </tr>`;
   }).join('');
-
+ 
   tbody.querySelectorAll('tr').forEach(row=>{
     row.addEventListener('click', ()=>openDrawer(row.dataset.id));
   });
-
+ 
   // stats
   document.getElementById('statTotal').textContent = channels.length;
   document.getElementById('statTagged').textContent = channels.filter(c=>c.tag && c.tag.trim()!=='').length;
@@ -1103,17 +1123,17 @@ function render(){
   document.getElementById('cEmpty').textContent = channels.filter(c=>!c.tag || c.tag.trim()==='').length;
   document.getElementById('cEdited').textContent = channels.filter(c=>c._edited).length;
 }
-
+ 
 function hexAlpha(cssVar){
   // cheap wash: just return same color with reduced opacity via color-mix fallback
   return `color-mix(in srgb, ${cssVar} 18%, transparent)`;
 }
-
+ 
 function escapeHtml(s){
   if(!s) return '';
   return s.replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
 }
-
+ 
 function maskToCidr(mask){
   if(!mask) return '';
   const parts = mask.split('.').map(Number);
@@ -1124,12 +1144,12 @@ function maskToCidr(mask){
   }
   return bits;
 }
-
+ 
 document.getElementById('searchInput').addEventListener('input', (e)=>{
   searchTerm = e.target.value;
   render();
 });
-
+ 
 document.querySelectorAll('#stateFilters .filter-chip').forEach(el=>{
   el.addEventListener('click', ()=>{
     activeStateFilter = el.dataset.state;
@@ -1139,15 +1159,15 @@ document.querySelectorAll('#stateFilters .filter-chip').forEach(el=>{
   });
 });
 document.querySelector('#stateFilters .filter-chip[data-state="all"]').classList.add('active');
-
+ 
 /* ===== DRAWER ===== */
 function openDrawer(id){
   currentChannelId = id;
   const c = channels.find(x=>x.id===id);
   const meta = TYPE_META[c.tipoCartaoCodigo];
-  document.getElementById('drawerTerminal').textContent = c.terminalCode;
+  document.getElementById('drawerTerminal').textContent = '%' + c.terminalCode;
   document.getElementById('drawerTagTitle').textContent = c.tag || '(canal reserva)';
-
+ 
   const isAnalogCard = c.tipoCartaoCodigo==='AI' || c.tipoCartaoCodigo==='AO';
   const netInfo = STATION_NETWORK_INFO[c.fcs];
   document.getElementById('metaGrid').innerHTML = `
@@ -1162,7 +1182,7 @@ function openDrawer(id){
     <div class="meta-item"><div class="k">IP Control Bus</div><div class="v">${netInfo.controlBusIp} · ${netInfo.controlBusMask}</div></div>
     <div class="meta-item"><div class="k">IP Ethernet</div><div class="v">${netInfo.ethernetIp} · ${netInfo.ethernetMask}</div></div>` : ''}
   `;
-
+ 
   const isAnalog = c.tipoCartaoCodigo==='AI' || c.tipoCartaoCodigo==='AO';
   let editHtml = `
     <div class="field-row">
@@ -1215,29 +1235,29 @@ function openDrawer(id){
       <input type="text" id="fld_motivo" placeholder="ex: troca de wiring, correção de tag, comissionamento...">
     </div>
   `;
-
+ 
   renderChannelHistory(c.terminalCode);
   renderSwapTab(c);
-
+ 
   document.querySelectorAll('.drawer-tab').forEach(t=>t.classList.remove('active'));
   document.querySelector('.drawer-tab[data-tab="edit"]').classList.add('active');
   document.getElementById('tabEdit').style.display='block';
   document.getElementById('tabSwap').style.display='none';
   document.getElementById('tabHistory').style.display='none';
   document.getElementById('editFooter').style.display='flex';
-
+ 
   document.getElementById('drawerOverlay').classList.add('open');
 }
-
+ 
 function renderSwapTab(c){
   const candidates = channels
     .filter(x => x.tipoCartaoCodigo === c.tipoCartaoCodigo && x.id !== c.id)
     .sort((a,b) => a.terminalCode.localeCompare(b.terminalCode));
-
+ 
   const options = candidates.map(x =>
     `<option value="${x.id}">${x.terminalCode} — ${x.tag ? x.tag : 'reserva'}${x.descricao ? ' · '+escapeAttr(x.descricao) : ''}</option>`
   ).join('');
-
+ 
   document.getElementById('tabSwap').innerHTML = `
     <div class="banner" style="margin-bottom:16px;">
       <span>⇄</span>
@@ -1269,7 +1289,7 @@ function renderSwapTab(c){
     </div>
     <button class="btn primary" id="confirmSwapBtn" style="width:100%;margin-top:6px;display:none;">Confirmar troca</button>
   `;
-
+ 
   document.getElementById('fld_swapTarget').addEventListener('change', (e)=>{
     const targetId = e.target.value;
     const previewEl = document.getElementById('swapPreview');
@@ -1289,39 +1309,39 @@ function renderSwapTab(c){
     `;
     btn.style.display='block';
   });
-
+ 
   document.getElementById('confirmSwapBtn').addEventListener('click', async ()=>{
     const targetId = document.getElementById('fld_swapTarget').value;
     if(!targetId) return;
-
+ 
     const tecnico = document.getElementById('fld_swapTecnico').value.trim();
     const dataRaw = document.getElementById('fld_swapData').value;
     const motivo = document.getElementById('fld_swapMotivo').value.trim();
-
+ 
     if(!tecnico || !dataRaw || !motivo){
       toast('Preencha técnico, data e motivo antes de confirmar a troca.');
       return;
     }
-
+ 
     await performSwap(c.id, targetId, { tecnico, motivo, ts: new Date(dataRaw).getTime() || Date.now() });
   });
 }
-
+ 
 async function performSwap(idA, idB, meta){
   const a = channels.find(x=>x.id===idA);
   const b = channels.find(x=>x.id===idB);
   if(!a || !b) return;
-
+ 
   const oldA = { tag: a.tag, descricao: a.descricao };
   const oldB = { tag: b.tag, descricao: b.descricao };
   const ts = meta.ts;
-
+ 
   try{
     const batch = writeBatch(db);
     batch.update(doc(db, 'channels', a.id), { tag: oldB.tag, descricao: oldB.descricao, _edited: true });
     batch.update(doc(db, 'channels', b.id), { tag: oldA.tag, descricao: oldA.descricao, _edited: true });
     await batch.commit();
-
+ 
     await addDoc(collection(db, 'history'), {
       channelId: a.id,
       terminalCode: a.terminalCode,
@@ -1350,16 +1370,16 @@ async function performSwap(idA, idB, meta){
     showRetryBanner();
     return;
   }
-
+ 
   lastTecnico = meta.tecnico;
   try{ localStorage.setItem('lastTecnico', meta.tecnico); }catch(e){}
-
+ 
   notifyTelegramSwap(a, b, oldA, oldB, meta);
-
+ 
   toast(`Canais trocados: ${a.terminalCode} ↔ ${b.terminalCode} — preenchimento automático concluído`);
   closeDrawer();
 }
-
+ 
 // Grava uma edição de canal: atualiza o documento do canal e registra o histórico.
 // A tela não precisa ser atualizada manualmente — o onSnapshot faz isso sozinho
 // assim que a escrita é confirmada pelo Firestore.
@@ -1369,7 +1389,7 @@ async function saveChannelEdit(channel, changes, meta){
     const updates = { _edited: true };
     changes.forEach(ch => { updates[ch.field] = ch.new; });
     await updateDoc(channelRef, updates);
-
+ 
     for(const ch of changes){
       await addDoc(collection(db, 'history'), {
         channelId: channel.id,
@@ -1391,7 +1411,7 @@ async function saveChannelEdit(channel, changes, meta){
     return false;
   }
 }
-
+ 
 function showRetryBanner(){
   if(document.getElementById('retryBanner')) return;
   const bar = document.createElement('div');
@@ -1402,11 +1422,11 @@ function showRetryBanner(){
   document.body.appendChild(bar);
   document.getElementById('retrySaveBtn').addEventListener('click', ()=> bar.remove());
 }
-
+ 
 function escapeAttr(s){
   return (s||'').replace(/"/g,'&quot;');
 }
-
+ 
 function renderChannelHistory(terminalCode){
   const items = history.filter(h=>h.terminalCode===terminalCode).sort((a,b)=>b.ts-a.ts);
   const wrap = document.getElementById('tabHistory');
@@ -1416,7 +1436,7 @@ function renderChannelHistory(terminalCode){
   }
   wrap.innerHTML = items.map(historyItemHtml).join('');
 }
-
+ 
 function historyItemHtml(h){
   const hasMeta = h.tecnico || h.motivo;
   return `
@@ -1438,12 +1458,12 @@ function historyItemHtml(h){
     </div>
   `;
 }
-
+ 
 function formatDate(ts){
   const d = new Date(ts);
   return d.toLocaleString('pt-BR', {day:'2-digit',month:'2-digit',year:'2-digit',hour:'2-digit',minute:'2-digit'});
 }
-
+ 
 document.querySelectorAll('.drawer-tab').forEach(tab=>{
   tab.addEventListener('click', ()=>{
     document.querySelectorAll('.drawer-tab').forEach(t=>t.classList.remove('active'));
@@ -1455,7 +1475,7 @@ document.querySelectorAll('.drawer-tab').forEach(tab=>{
     document.getElementById('editFooter').style.display = which==='edit' ? 'flex':'none';
   });
 });
-
+ 
 document.getElementById('closeDrawerBtn').addEventListener('click', closeDrawer);
 document.getElementById('cancelEditBtn').addEventListener('click', closeDrawer);
 function closeDrawer(){
@@ -1465,7 +1485,7 @@ function closeDrawer(){
 document.getElementById('drawerOverlay').addEventListener('click', (e)=>{
   if(e.target.id==='drawerOverlay') closeDrawer();
 });
-
+ 
 const FIELD_LABELS = {
   tag: 'Tag do instrumento',
   descricao: 'Descrição',
@@ -1474,11 +1494,11 @@ const FIELD_LABELS = {
   unidade: 'Unidade',
   modo: 'Modo',
 };
-
+ 
 document.getElementById('saveEditBtn').addEventListener('click', async ()=>{
   const c = channels.find(x=>x.id===currentChannelId);
   if(!c) return;
-
+ 
   const fieldIds = ['tag','descricao','faixaBaixa','faixaAlta','unidade','modo'];
   const changes = [];
   fieldIds.forEach(f=>{
@@ -1490,35 +1510,35 @@ document.getElementById('saveEditBtn').addEventListener('click', async ()=>{
       changes.push({field:f, old:oldVal, new:newVal});
     }
   });
-
+ 
   if(changes.length === 0){
     toast('Nenhuma alteração detectada.');
     return;
   }
-
+ 
   const tecnico = document.getElementById('fld_tecnico').value.trim();
   const dataAlteracaoRaw = document.getElementById('fld_dataAlteracao').value;
   const motivo = document.getElementById('fld_motivo').value.trim();
-
+ 
   if(!tecnico || !dataAlteracaoRaw || !motivo){
     toast('Preencha técnico, data e motivo da alteração antes de salvar.');
     return;
   }
-
+ 
   const ts = new Date(dataAlteracaoRaw).getTime() || Date.now();
-
+ 
   lastTecnico = tecnico;
   try{ localStorage.setItem('lastTecnico', tecnico); }catch(e){}
-
+ 
   const ok = await saveChannelEdit(c, changes, { tecnico, motivo, ts });
   if(!ok) return;
-
+ 
   notifyTelegramEdit(c, changes, { tecnico, motivo, ts });
-
+ 
   toast(`${changes.length} campo(s) atualizado(s) — ${c.terminalCode}`);
   closeDrawer();
 });
-
+ 
 /* ===== HISTÓRICO GERAL ===== */
 document.getElementById('openHistoryBtn').addEventListener('click', ()=>{
   const sorted = [...history].sort((a,b)=>b.ts-a.ts);
@@ -1536,14 +1556,15 @@ document.getElementById('closeGlobalHistoryBtn').addEventListener('click', ()=>{
 document.getElementById('globalHistoryPanel').addEventListener('click', (e)=>{
   if(e.target.id==='globalHistoryPanel') e.currentTarget.classList.remove('open');
 });
-
+ 
 if('serviceWorker' in navigator){
   window.addEventListener('load', ()=>{
     navigator.serviceWorker.register('sw.js').catch(err=>console.warn('Falha ao registrar service worker', err));
   });
 }
-
+ 
 init();
 </script>
 </body>
 </html>
+ 
