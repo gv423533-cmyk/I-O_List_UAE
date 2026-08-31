@@ -655,6 +655,14 @@ function parseYokogawaCsv(text, meta, tipoInfo, ridStart){
     if(terminalCode.length < 6) continue; // linha fora do padrão esperado
     const { node, slot, protocoloCode, protocolo, canal } = decodeTerminal(terminalCode);
 
+    // Cartões analógicos (AI/AO) exportam um segundo bloco de endereçamento HART
+    // para os mesmos terminais físicos (ex: %Z022201, com colunas diferentes:
+    // Channel/Data/Polling Address). Esse bloco não representa um canal físico
+    // novo — é o mesmo terminal do bloco convencional (%Z022101) — então é
+    // ignorado para não gerar canais duplicados nem ler dados desalinhados.
+    const isHartDuplicateBlock = (tipoInfo.code === 'AI' || tipoInfo.code === 'AO') && protocoloCode === '2';
+    if(isHartDuplicateBlock) continue;
+
     let tag = '';
     for(const cell of row){
       if(cell && cell.startsWith('%%')){ tag = cell.replace(/^%+/, ''); break; }
