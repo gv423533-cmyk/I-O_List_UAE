@@ -1024,7 +1024,8 @@ const STATION_NETWORK_INFO = {
 
 function renderStationSummary(){
   const byFcs = {};
-  channels.forEach(c=>{
+  const scopedForSummary = activeFcsFilter === 'all' ? channels : channels.filter(c => c.fcs === activeFcsFilter);
+  scopedForSummary.forEach(c=>{
     const key = c.fcs || '—';
     if(!byFcs[key]){
       byFcs[key] = { fcs: key, estacao: c.estacao || '', total: 0, emUso: 0, reserva: 0 };
@@ -1040,10 +1041,13 @@ function renderStationSummary(){
   const rows = Object.values(byFcs).sort((a,b)=> a.fcs.localeCompare(b.fcs));
   const wrap = document.getElementById('stationSummary');
 
+  // O subtítulo do topbar sempre reflete o total geral da planta, independente
+  // do filtro de estação selecionado — só os cards abaixo mudam com o filtro.
+  const totalFcsCount = new Set(channels.map(c => c.fcs)).size;
   const subtitleEl = document.getElementById('brandSubtitle');
   if(subtitleEl){
-    subtitleEl.textContent = rows.length
-      ? `${rows.length} ${rows.length>1?'estações':'estação'} · ${channels.length} canais`
+    subtitleEl.textContent = totalFcsCount
+      ? `${totalFcsCount} ${totalFcsCount>1?'estações':'estação'} · ${channels.length} canais`
       : 'Nenhum dado carregado';
   }
 
