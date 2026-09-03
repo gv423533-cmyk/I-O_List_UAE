@@ -1400,26 +1400,41 @@ function openDrawer(id){
   document.getElementById('drawerOverlay').classList.add('open');
 }
 
-function renderSwapTab(c){
-  const candidates = channels
-    .filter(x => x.tipoCartaoCodigo === c.tipoCartaoCodigo && x.id !== c.id)
-    .sort((a,b) => a.terminalCode.localeCompare(b.terminalCode));
+let _swapTargetId = null;
 
-  const options = candidates.map(x =>
-    `<option value="${x.id}">${x.terminalCode} — ${x.tag ? x.tag : 'reserva'}${x.descricao ? ' · '+escapeAttr(x.descricao) : ''}</option>`
-  ).join('');
+function renderSwapTab(c){
+  _swapTargetId = null;
+
+  const fcsList = [...new Set(channels
+    .filter(x => x.tipoCartaoCodigo === c.tipoCartaoCodigo)
+    .map(x => x.fcs))].sort();
 
   document.getElementById('tabSwap').innerHTML = `
     <div class="banner" style="margin-bottom:16px;">
       <span>⇄</span>
-      <span>Selecione o canal de destino. A tag e a descrição dos dois terminais serão trocadas automaticamente e o histórico é registrado nos dois lados.</span>
+      <span>Escolha a estação, o node e o slot de destino para ver os canais disponíveis. A tag e a descrição dos dois terminais serão trocadas automaticamente e o histórico é registrado nos dois lados.</span>
+    </div>
+    <div class="field-grid">
+      <div class="field-row">
+        <label>Estação (FCS)</label>
+        <select id="fld_swapFcs">
+          ${fcsList.map(f => `<option value="${escapeAttr(f)}" ${f===c.fcs?'selected':''}>${escapeHtml(f)}</option>`).join('')}
+        </select>
+      </div>
+      <div class="field-row">
+        <label>Node</label>
+        <select id="fld_swapNode"></select>
+      </div>
     </div>
     <div class="field-row">
-      <label>Trocar com o terminal</label>
-      <select id="fld_swapTarget">
-        <option value="">Selecione o canal de destino…</option>
-        ${options}
+      <label>Slot / Cartão físico</label>
+      <select id="fld_swapSlot">
+        <option value="">Selecione o slot…</option>
       </select>
+    </div>
+    <div id="swapChannelListWrap" style="display:none;">
+      <label style="display:block; font-size:10.5px; text-transform:uppercase; letter-spacing:0.5px; color:var(--text-faint); margin:14px 0 8px; font-weight:600;">Canais do slot selecionado</label>
+      <div id="swapChannelList" style="display:flex; flex-direction:column; gap:6px; max-height:260px; overflow-y:auto;"></div>
     </div>
     <div id="swapPreview"></div>
     <div style="height:1px;background:var(--border-soft);margin:18px 0;"></div>
@@ -1441,29 +1456,95 @@ function renderSwapTab(c){
     <button class="btn primary" id="confirmSwapBtn" style="width:100%;margin-top:6px;display:none;">Confirmar troca</button>
   `;
 
-  document.getElementById('fld_swapTarget').addEventListener('change', (e)=>{
-    const targetId = e.target.value;
-    const previewEl = document.getElementById('swapPreview');
-    const btn = document.getElementById('confirmSwapBtn');
-    if(!targetId){ previewEl.innerHTML=''; btn.style.display='none'; return; }
+  function candidatesForFcs(fcs){
+    return channels.filter(x => x.tipoCartaoCodigo === c.tipoCartaoCodigo && x.fcs === fcs);
+  }
+
+  function populateNodeSelect(){
+    const fcs = document.getElementById('fld_swapFcs').value;
+    const nodes = [...new Set(candidatesForFcs(fcs).map(x=>x.node))].sort((a,b)=>a.localeCompare(b, undefined, {numeric:true}));
+    const nodeSel = document.getElementById('fld_swapNode');
+    nodeSel.innerHTML = nodes.map(n => `<option value="${escapeAttr(n)}" ${n===c.node && fcs===c.fcs ?'selected':''}>Node ${escapeHtml(n)}</option>`).join('');
+    populateSlotSelect();
+  }
+
+  function populateSlotSelect(){
+    const fcs = document.getElementById('fld_swapFcs').value;
+    const node = document.getElementById('fld_swapNode').value;
+    const slots = [...new Set(candidatesForFcs(fcs).filter(x=>x.node===node).map(x=>x.slot))].sort((a,b)=>a.localeCompare(b, undefined, {numeric:true}));
+    const slotSel = document.getElementById('fld_swapSlot');
+    slotSel.innerHTML = `<option value="">Selecione o slot…</option>` +
+      slots.map(s => `<option value="${escapeAttr(s)}" ${s===c.slot && node===c.node && fcs===c.fcs ?'selected':''}>Slot ${escapeHtml(s)}</option>`).join('');
+    renderChannelList();
+  }
+
+  function renderChannelList(){
+    const fcs = document.getElementById('fld_swapFcs').value;
+    const node = document.getElementById('fld_swapNode').value;
+    const slot = document.getElementById('fld_swapSlot').value;
+    const wrap = document.getElementById('swapChannelListWrap');
+    const listEl = document.getElementById('swapChannelList');
+    _swapTargetId = null;
+    document.getElementById('swapPreview').innerHTML = '';
+    document.getElementById('confirmSwapBtn').style.display = 'none';
+
+    if(!slot){ wrap.style.display = 'none'; listEl.innerHTML = ''; return; }
+
+    const items = candidatesForFcs(fcs)
+      .filter(x => x.node===node && x.slot===slot && x.id !== c.id)
+      .sort((a,b)=> a.terminalCode.localeCompare(b.terminalCode));
+
+    wrap.style.display = 'block';
+    if(!items.length){
+      listEl.innerHTML = `<div class="history-empty">Nenhum outro canal encontrado nesse slot.</div>`;
+      return;
+    }
+
+    listEl.innerHTML = items.map(x => `
+      <div class="filter-chip swap-channel-row" data-target-id="${x.id}" style="padding:9px 10px;">
+        <span style="display:flex; align-items:center; gap:8px; min-width:0;">
+          <span class="mono" style="color:var(--text-faint); font-size:11px; flex-shrink:0;">%${escapeHtml(x.terminalCode)}</span>
+          <span class="mono" style="font-weight:600; ${x.tag?'':'color:var(--text-faint);font-style:italic;'}">${x.tag ? escapeHtml(x.tag) : 'reserva'}</span>
+        </span>
+        <span style="font-size:10.5px; color:var(--text-faint); text-align:right; max-width:40%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${escapeHtml(x.descricao)||''}</span>
+      </div>
+    `).join('');
+
+    listEl.querySelectorAll('.swap-channel-row').forEach(row=>{
+      row.addEventListener('click', ()=>{
+        listEl.querySelectorAll('.swap-channel-row').forEach(r=>r.classList.remove('active'));
+        row.classList.add('active');
+        selectSwapTarget(row.dataset.targetId);
+      });
+    });
+  }
+
+  function selectSwapTarget(targetId){
+    _swapTargetId = targetId;
     const t = channels.find(x=>x.id===targetId);
+    const previewEl = document.getElementById('swapPreview');
     previewEl.innerHTML = `
       <div style="font-size:10.5px;color:var(--text-faint);text-transform:uppercase;letter-spacing:0.5px;margin:14px 0 8px;">Preenchimento automático após a troca</div>
       <div class="history-item" style="margin-bottom:8px;">
-        <div class="h-top"><span class="h-field">${c.terminalCode} (este canal)</span></div>
+        <div class="h-top"><span class="h-field">${t.fcs} · %${c.terminalCode} (este canal)</span></div>
         <div class="h-change"><span class="h-old">${escapeHtml(c.tag)||'(reserva)'}</span><span class="h-arrow">→</span><span class="h-new">${escapeHtml(t.tag)||'(reserva)'}</span></div>
       </div>
       <div class="history-item">
-        <div class="h-top"><span class="h-field">${t.terminalCode} (destino)</span></div>
+        <div class="h-top"><span class="h-field">${t.fcs} · %${t.terminalCode} (destino)</span></div>
         <div class="h-change"><span class="h-old">${escapeHtml(t.tag)||'(reserva)'}</span><span class="h-arrow">→</span><span class="h-new">${escapeHtml(c.tag)||'(reserva)'}</span></div>
       </div>
     `;
-    btn.style.display='block';
-  });
+    document.getElementById('confirmSwapBtn').style.display = 'block';
+  }
+
+  document.getElementById('fld_swapFcs').addEventListener('change', populateNodeSelect);
+  document.getElementById('fld_swapNode').addEventListener('change', populateSlotSelect);
+  document.getElementById('fld_swapSlot').addEventListener('change', renderChannelList);
+
+  populateNodeSelect();
 
   document.getElementById('confirmSwapBtn').addEventListener('click', async ()=>{
-    const targetId = document.getElementById('fld_swapTarget').value;
-    if(!targetId) return;
+    if(!_swapTargetId) return;
 
     const tecnico = document.getElementById('fld_swapTecnico').value.trim();
     const dataRaw = document.getElementById('fld_swapData').value;
@@ -1474,9 +1555,10 @@ function renderSwapTab(c){
       return;
     }
 
-    await performSwap(c.id, targetId, { tecnico, motivo, ts: new Date(dataRaw).getTime() || Date.now() });
+    await performSwap(c.id, _swapTargetId, { tecnico, motivo, ts: new Date(dataRaw).getTime() || Date.now() });
   });
 }
+
 
 async function performSwap(idA, idB, meta){
   const a = channels.find(x=>x.id===idA);
