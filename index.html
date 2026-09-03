@@ -434,6 +434,10 @@
       <div id="typeFilters"></div>
     </div>
     <div class="filter-group">
+      <h4>Node</h4>
+      <div id="nodeFilters"></div>
+    </div>
+    <div class="filter-group">
       <h4>Slot / Cartão físico</h4>
       <div id="slotFilters"></div>
     </div>
@@ -936,6 +940,7 @@ let history = [];
 let lastTecnico = '';
 let activeFcsFilter = 'all';
 let activeTypeFilter = 'all';
+let activeNodeFilter = 'all';
 let activeSlotFilter = 'all';
 let activeStateFilter = 'all';
 let searchTerm = '';
@@ -996,6 +1001,36 @@ function getFcsScopedChannels(){
   return activeFcsFilter === 'all' ? channels : channels.filter(c => c.fcs === activeFcsFilter);
 }
 
+function getFcsAndNodeScopedChannels(){
+  const scoped = getFcsScopedChannels();
+  return activeNodeFilter === 'all' ? scoped : scoped.filter(c => c.node === activeNodeFilter);
+}
+
+function renderNodeFilters(){
+  const scoped = getFcsScopedChannels();
+  const wrap = document.getElementById('nodeFilters');
+  const nodes = [...new Set(scoped.map(c=>c.node))].sort((a,b)=> a.localeCompare(b, undefined, {numeric:true}));
+  let html = `<div class="filter-chip${activeNodeFilter==='all'?' active':''}" data-node="all"><span>Todos</span><span class="count">${scoped.length}</span></div>`;
+  nodes.forEach(n=>{
+    const count = scoped.filter(c=>c.node===n).length;
+    html += `<div class="filter-chip${activeNodeFilter===n?' active':''}" data-node="${n}">
+      <span>Node ${escapeHtml(n)}</span>
+      <span class="count">${count}</span>
+    </div>`;
+  });
+  wrap.innerHTML = html;
+  wrap.querySelectorAll('.filter-chip').forEach(el=>{
+    el.addEventListener('click', ()=>{
+      const val = el.dataset.node;
+      if(activeNodeFilter === val) return;
+      activeNodeFilter = val;
+      activeSlotFilter = 'all'; // reseta o slot ao trocar de node, pra evitar filtro "vazio"
+      render();
+      closeSidebar();
+    });
+  });
+}
+
 function renderFcsFilters(){
   const wrap = document.getElementById('fcsFilters');
   const fcsList = [...new Set(channels.map(c => c.fcs))].sort();
@@ -1013,8 +1048,9 @@ function renderFcsFilters(){
       const val = el.dataset.fcs;
       if(activeFcsFilter === val) return;
       activeFcsFilter = val;
-      // ao trocar de estação, reseta tipo/slot pra evitar filtro "vazio" sem o usuário entender por quê
+      // ao trocar de estação, reseta tipo/node/slot pra evitar filtro "vazio" sem o usuário entender por quê
       activeTypeFilter = 'all';
+      activeNodeFilter = 'all';
       activeSlotFilter = 'all';
       render();
       closeSidebar();
@@ -1047,7 +1083,7 @@ function buildTypeFilters(){
 }
 
 function buildSlotFilters(){
-  const scoped = getFcsScopedChannels();
+  const scoped = getFcsAndNodeScopedChannels();
   const wrap = document.getElementById('slotFilters');
   const slots = [...new Set(scoped.map(c=>c.slot))].sort((a,b)=> a.localeCompare(b, undefined, {numeric:true}));
   let html = `<div class="filter-chip${activeSlotFilter==='all'?' active':''}" data-slot="all"><span>Todos</span><span class="count">${scoped.length}</span></div>`;
@@ -1074,6 +1110,7 @@ function getFiltered(){
   let list = channels;
   if(activeFcsFilter !== 'all') list = list.filter(c=>c.fcs===activeFcsFilter);
   if(activeTypeFilter !== 'all') list = list.filter(c=>c.tipoCartaoCodigo===activeTypeFilter);
+  if(activeNodeFilter !== 'all') list = list.filter(c=>c.node===activeNodeFilter);
   if(activeSlotFilter !== 'all') list = list.filter(c=>c.slot===activeSlotFilter);
   if(activeStateFilter === 'tagged') list = list.filter(c=>c.tag && c.tag.trim()!=='');
   if(activeStateFilter === 'empty') list = list.filter(c=>!c.tag || c.tag.trim()==='');
@@ -1193,6 +1230,7 @@ function render(){
   renderStationSummary();
   renderFcsFilters();
   buildTypeFilters();
+  renderNodeFilters();
   buildSlotFilters();
   const list = getFiltered();
   const tbody = document.getElementById('tableBody');
