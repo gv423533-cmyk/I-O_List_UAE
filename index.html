@@ -1026,7 +1026,6 @@ function renderNodeFilters(){
       activeNodeFilter = val;
       activeSlotFilter = 'all'; // reseta o slot ao trocar de node, pra evitar filtro "vazio"
       render();
-      closeSidebar();
     });
   });
 }
@@ -1053,7 +1052,6 @@ function renderFcsFilters(){
       activeNodeFilter = 'all';
       activeSlotFilter = 'all';
       render();
-      closeSidebar();
     });
   });
 }
@@ -1077,7 +1075,6 @@ function buildTypeFilters(){
     el.addEventListener('click', ()=>{
       activeTypeFilter = el.dataset.type;
       render();
-      closeSidebar();
     });
   });
 }
@@ -1101,7 +1098,6 @@ function buildSlotFilters(){
     el.addEventListener('click', ()=>{
       activeSlotFilter = el.dataset.slot;
       render();
-      closeSidebar();
     });
   });
 }
@@ -1306,7 +1302,6 @@ document.querySelectorAll('#stateFilters .filter-chip').forEach(el=>{
     document.querySelectorAll('#stateFilters .filter-chip').forEach(x=>x.classList.remove('active'));
     el.classList.add('active');
     render();
-    closeSidebar();
   });
 });
 document.querySelector('#stateFilters .filter-chip[data-state="all"]').classList.add('active');
